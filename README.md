@@ -102,37 +102,6 @@ you can find usage instructions [here](docs/USAGE.md)
   **note:** if you have patched the firmware without OTA boot, you need to [add it on the header of the patched firmware](docs/OTABOOT.md) before [flashing via UART.](docs/FLASHING.md) you do **NOT** need this if you're using the [besota](https://github.com/nnonickreal/besota) script!
 </details>
 
-## technical deep dive
-
-<details>
-<summary>nerd stuff ahead: click to expand...</summary>
-
-this section contains some of the initial findings from reverse-engineering the q35 firmware.
-
-#### engineering modes and features
-the headphones have several hidden test modes. some of them could be useful for future updates or debugging.
-
-*   **engineering mode:** to enter this mode, hold the power button, connect the headphones to a pc via usb-c *before* they turn on, and wait for them to power up.
-
-*   **rfcomm:** the headphones have two serial com ports. one of them is writable. so far, the only function i've managed to trigger through this port is a **UFR** (explanation below). this seems to be a security measure, as it was triggered by brute-forcing various hex codes rather than a specific command. interestingly, this is not the standard reset (power + vol+) but something different.
-
-*   **testing mode:** this mode is entered similarly to engineering mode, but you need to release the power button immediately after the white led flashes for the first time, **before the blue light**. the headphones will then appear on the pc as a device with a "device descriptor request failed" error. you can confirm you're in this mode by the white led, which blinks faster than usual. its purpose is likely related to firmware flashing. also, in this mode, the headphones can be powered on while charging!
-
-*   **undocumented factory reset (UFR):** a hidden factory reset can be triggered by rapidly pressing the power button multiple times while the headphones are powered on or sending something on virtual com port (above). this will cause the firmware to hang and then force a reboot after about 30 seconds. note that this action will erase all user data, including equalizer settings, bluetooth pairings, and other configurations.
-
-#### firmware structure
-the firmware appears to be a monolithic binary divided into multiple sections. each critical section is protected by a `CRC32` checksum. future patchers will automatically recalculate these checksums after any modification to prevent boot failures.
-
-#### audio system
-*   **stock:** the original system sounds are stored as `16khz, mono, SBC` audio streams.
-*   **modded:** by patching the functions responsible for initializing the audio dac, it's possible to force the system to play back audio at `48khz, stereo`. this significantly improves the quality of custom sounds.
-
-#### key components & interfaces
-*   **chipset:** the heart of the q35 is a bestechnic (bes, best) `bes2300p` SoC. a datasheet can be found with searching.
-*   **debug port:** a `uart` serial port is available on the pcb, which was used for initial debugging and is the primary method for unbricking a device after a bad flash. the `bes2300p` chip itself has two uart ports, but only one of them is exposed as easily accessible pads on the pcb.
-
-</details>
-
 ## contributing
 
 contributions are what make the open source community such an amazing place to learn, inspire, and create. any contributions you make are **greatly appreciated**.
