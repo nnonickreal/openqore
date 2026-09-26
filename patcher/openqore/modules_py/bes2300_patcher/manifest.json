@@ -1,0 +1,7 @@
+{
+  "name": "bes2300* patcher (sounds / stereo / sample rate)",
+  "chip": "bes2300p",
+  "version": "1.0",
+  "description": "dynamically finds the sound_manager switch, replaces WAV prompts with re-encoded SBC, optionally mutes prompts (size=0), and can patch the mono->stereo mixer + sample rate.",
+  "author": "nnonick"
+}

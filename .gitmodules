@@ -1,0 +1,3 @@
+[submodule "patcher/besota"]
+	path = patcher/besota
+	url = https://github.com/nnonickreal/besota

@@ -1,0 +1,36 @@
+{
+  "name": "Example TWS model X (hex-only patches)",
+  "chip": "generic",
+  "requires_repack": "auto",
+  "base_address_choices": [
+    { "label": "without OTA boot (base 0x3c018000)", "value": "0x3c018000" },
+    { "label": "with OTA boot (base 0x3c000000)", "value": "0x3c000000" }
+  ],
+  "patches": [
+    {
+      "name": "disable volume limiter check",
+      "type": "hex_replace",
+      "find_hex": "002A00D1",
+      "find_mask": "FFFFFFFF",
+      "replace_hex": "0020",
+      "occurrence": "first"
+    },
+    {
+      "name": "maximum volume level",
+      "type": "int_field_patch",
+      "signature_hex": "40F20F30",
+      "signature_mask": "FFFFFFF0",
+      "instr_offset": 0,
+      "field": { "id": "max_volume", "label": "maximum volume steps", "kind": "int", "min": 5, "max": 30, "default": 16 }
+    },
+    {
+      "name": "enable/disable low-battery voice prompt",
+      "type": "bool_toggle",
+      "find_hex": "0022",
+      "find_mask": "FFFF",
+      "replace_hex_true": "0022",
+      "replace_hex_false": "0120",
+      "field": { "id": "battery_prompt", "label": "play low-battery voice prompt", "kind": "bool", "default": true }
+    }
+  ]
+}

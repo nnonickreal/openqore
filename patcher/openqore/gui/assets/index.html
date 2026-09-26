@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>openqore</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app">
+
+    <div class="brand">
+      <div class="brand-nav">
+        <button type="button" class="nav-tab active" id="tabOpenqore">openqore</button>
+        <span class="nav-separator">|</span>
+        <button type="button" class="nav-tab" id="tabBesota">besota</button>
+      </div>
+      <div class="brand-sub">by <a href="https://github.com/nnonickreal" target="_blank" class="author-link">nnonick</a> :3</div>
+    </div>
+
+    <div class="views-viewport">
+	
+      <div id="viewOpenqore" class="tab-view active">
+        <div id="view"></div>
+      </div>
+
+      <div id="viewBesota" class="tab-view">
+        <div class="notice">
+          <b>Connection.</b> Pair the headphones in your os first, then <b>scan</b> for the device by name, or type its mac address directly.
+        </div>
+
+        <section>
+          <h2>protocol</h2>
+          <div class="radio-group" id="protocolGroup">
+            <label class="radio-opt selected" data-proto="v1">
+              <input type="radio" name="proto" value="v1" checked>
+              <div class="radio-opt-title">BESOTA V1 &mdash; headphones before ~2022</div>
+            </label>
+            <label class="radio-opt" data-proto="v2">
+              <input type="radio" name="proto" value="v2">
+              <div class="radio-opt-title">BESOTA V1.1 &mdash; headphones after ~2022</div>
+            </label>
+          </div>
+        </section>
+
+        <section>
+          <h2>ota_boot offset</h2>
+          <div class="row">
+            <div class="field">
+              <label for="otaPreset">Offset preset</label>
+              <select id="otaPreset">
+                <option value="0x18000">0x18000 (BES2300* / soundcore Q35 / Q30 &amp; Nothing ear (1))</option>
+                <option value="0x20000">0x20000 (soundcore Space * &amp; Nothing / CMF headphone (*))</option>
+                <option value="custom">custom...</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="otaCustom">Custom address (hex)</label>
+              <input type="text" id="otaCustom" value="0x18000" spellcheck="false" disabled>
+            </div>
+          </div>
+        </section>
+
+        <section>
+          <h2>choose firmware</h2>
+          <div class="filedrop" id="besotaDropZone">
+            click to browse for a .bin firmware file
+          </div>
+          <div class="or-divider">
+            <span>or download from catalog</span>
+          </div>
+          <button type="button" id="btnBesotaArchive" style="width: 100%;">Browse firmware archive</button>
+          <div class="filemeta" id="besotaFileMeta">no file selected.</div>
+        </section>
+
+        <section>
+          <h2>connection</h2>
+          <div class="row">
+            <div class="field" style="flex: 2; min-width: 160px;">
+              <label for="scanName">Device name</label>
+              <input type="text" id="scanName" placeholder="e.g. soundcore" spellcheck="false">
+            </div>
+            <div class="field field-compact">
+              <label for="scanSeconds">scan, sec</label>
+              <input type="number" id="scanSeconds" value="3" min="1" max="30">
+            </div>
+          </div>
+
+          <div class="row">
+            <button id="btnScan">Scan</button>
+          </div>
+
+          <div class="field">
+            <label for="scanResults">Found devices</label>
+            <select id="scanResults">
+              <option value="">-- no scan results yet --</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="address">Bluetooth mac address</label>
+            <input type="text" id="address" placeholder="AA:BB:CC:DD:EE:FF" spellcheck="false">
+          </div>
+
+          <div class="row">
+            <button id="btnConnect">Connect</button>
+            <button id="btnDisconnect" disabled>Disconnect</button>
+          </div>
+
+          <div class="status-row">
+            <span class="dot" id="connDot"></span>
+            <span id="connStatus">not connected.</span>
+          </div>
+        </section>
+
+        <section>
+          <h2>flash</h2>
+          <div class="row">
+            <button id="btnFlash" disabled>Start flashing</button>
+            <button id="btnAbort" class="danger" disabled>Abort</button>
+          </div>
+
+          <div class="progress-wrap">
+            <div class="progress-bar" id="besotaProgressBar"></div>
+          </div>
+          <div class="progress-meta">
+            <span id="progressPct">0.0%</span>
+            <span id="progressBytes">0 / 0 KB</span>
+            <span id="progressSpeed">0.0 KB/s</span>
+            <span id="progressEta">eta --s</span>
+          </div>
+
+          <div class="log" id="besotaLog"></div>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

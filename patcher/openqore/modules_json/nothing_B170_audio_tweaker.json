@@ -1,0 +1,77 @@
+{
+  "name": "nothing headphone (1) 1.0.1.81 firmware audio tweaks",
+  "chip": "bes1600 (2700YH)",
+  "requires_repack": "auto",
+  "base_address_choices": [
+    { "label": "without OTA boot (base 0x34020000)", "value": "0x34020000" },
+    { "label": "with OTA boot (base 0x34000000)", "value": "0x34000000" }
+  ],
+  "patches": [
+    {
+      "name": "audio_prompt_state_2",
+      "type": "choice_patch",
+      "find_hex": "049B13F0FE0F0CBF0623052378E7",
+      "find_mask": "FFFFFFFFFFFFFFFFFFFFFFFFFFFF",
+      "variants": {
+        "0": "049B13F0FE0F0CBF0623002378E7",
+        "1": "049B13F0FE0F0CBF0623012378E7",
+        "2": "049B13F0FE0F0CBF0623022378E7",
+        "3": "049B13F0FE0F0CBF0623032378E7",
+        "4": "049B13F0FE0F0CBF0623042378E7",
+        "5": "049B13F0FE0F0CBF0623052378E7"
+      },
+      "field": {
+        "id": "prompt_state_ne",
+        "label": "Play Audio State (tst != 0, mov.ne)",
+        "kind": "choice",
+        "choices": [
+          [0, "0x0 (Level 0, sounds disabled)"],
+          [1, "0x1 (Level 1)"],
+          [2, "0x2 (Level 2)"],
+          [3, "0x3 (Level 3)"],
+          [4, "0x4 (Level 4)"],
+          [5, "0x5 (Level 5, stock value)"]
+        ],
+        "default": 5,
+        "help": "Target: 3413ac46 mov.ne r3, #imm. Original value is 0x05."
+      }
+    },
+    {
+      "name": "algo_gain_volume_percent",
+      "type": "choice_patch",
+      "find_hex": "FDDE3634CDCCCC3D98465920",
+      "find_mask": "FFFFFFFFFFFFFFFFFFFFFFFF",
+      "variants": {
+        "10":  "FDDE3634CDCCCC3D98465920",
+        "20":  "FDDE3634CDCC4C3E98465920",
+        "30":  "FDDE36349A99993E98465920",
+        "40":  "FDDE3634CDCCCC3E98465920",
+        "50":  "FDDE36340000003F98465920",
+        "60":  "FDDE36349A99193F98465920",
+        "70":  "FDDE36343333333F98465920",
+        "80":  "FDDE3634CDCC4C3F98465920",
+        "90":  "FDDE36346666663F98465920",
+        "100": "FDDE36340000803F98465920"
+      },
+      "field": {
+        "id": "algo_gain_volume",
+        "label": "Audio Algo Gain Level (%)",
+        "kind": "choice",
+        "choices": [
+          [10, "10% (0.1 float, stock value)"],
+          [20, "20% (0.2 float)"],
+          [30, "30% (0.3 float)"],
+          [40, "40% (0.4 float)"],
+          [50, "50% (0.5 float)"],
+          [60, "60% (0.6 float)"],
+          [70, "70% (0.7 float)"],
+          [80, "80% (0.8 float)"],
+          [90, "90% (0.9 float)"],
+          [100, "100% (1.0 float)"]
+        ],
+        "default": 10,
+        "help": "Target: DAT_3413acf8 loaded via vldr.32 into s0 for algo_gain(). Modifies IEEE-754 float literal."
+      }
+    }
+  ]
+}
