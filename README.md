@@ -44,7 +44,7 @@ read [roadmaps and models](https://github.com/nnonickreal/openqore/blob/main/doc
 - [x] initial firmware patcher for sound replacement.
 - [x] make patcher to work with all bes2300* chipsets (**warning! needs testing**)
 - [ ] make patcher to work with all (or the most) bes chipsets
-- [ ] create a user-friendly GUI for the patcher.
+- [x] create a user-friendly GUI for the patcher.
 - [x] reverse-engineer the OTA (over-the-air) update protocol for wireless flashing. (see [besota](https://github.com/nnonickreal/besota))
 - [ ] document the firmware structure and key functions.
 - [ ] develop a library of community-created sound packs.
@@ -53,9 +53,9 @@ read [roadmaps and models](https://github.com/nnonickreal/openqore/blob/main/doc
 
 this guide assumes you have `python` and `git` installed on your system if you're on linux or using CLI mode.
 
-**1. download latest release from [releases](https://github.com/nnonickreal/openqore/releases/latest)**
+**1. download latest release from [releases](https://github.com/nnonickreal/openqore/releases/latest) and open the .exe file.**
 
-**2. install dependencies (only for CLI and building)**
+**2. install dependencies (only for CLI, linux or building)**
 
 the patcher requires FFmpeg for audio conversion and pybluez:
 
@@ -79,7 +79,7 @@ sudo apt install ffmpeg
 
 **3. get your firmware file**
 
-click on "Browse firmware archive" and download the firmware.
+click on "Browse firmware archive" and download the firmware (or select "patch firmware" -> "download from online archive" option in CLI).
 
 also, you can download the OTA image [here](https://github.com/nnonickreal/openqore/blob/main/docs/FIRMWARES.md) or read the flash with UART:
 
@@ -97,9 +97,9 @@ you can find usage instructions [here](docs/USAGE.md)
 <br>
   if you're patching the flash dump of the headphones, select the "with OTA boot" option.
   
-  if you have downloaded the OTA update image from the official update servers, select the "without OTA boot" option
+  if you have downloaded the OTA update image from the official update servers, select the "without OTA boot" option.
 
-  **note:** if you have patched the firmware without OTA boot, you need to [add it on the header of the patched firmware](docs/OTABOOT.md) before [flashing via UART.](docs/FLASHING.md) you do **NOT** need this if you're using the [besota](https://github.com/nnonickreal/besota) script!
+  **note:** if you have patched the firmware without OTA boot, you need to [append the OTA boot offset](docs/OTABOOT.md) before [flashing via UART (bestool).](docs/FLASHING.md) you do **NOT** need this if you're using the [besota](https://github.com/nnonickreal/besota) script!
 </details>
 
 ## contributing
@@ -138,4 +138,4 @@ this is a modern project built with modern tools.
 
 ## license
 
-this project is licensed under the MIT license. you can find the full license text in the [license](LICENSE) file.
+this project is licensed under the GPLv3 license. you can find the full license text in the [license](LICENSE) file.
