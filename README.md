@@ -51,13 +51,13 @@ read [roadmaps and models](https://github.com/nnonickreal/openqore/blob/main/doc
 
 ## quick start
 
-this guide assumes you have `python` and `git` installed on your system.
+this guide assumes you have `python` and `git` installed on your system if you're on linux or using CLI mode.
 
-**1. download and extract the zip archive from [releases](https://github.com/nnonickreal/openqore/releases/latest)**
+**1. download latest release from [releases](https://github.com/nnonickreal/openqore/releases/latest)**
 
-**2. install dependencies**
+**2. install dependencies (only for CLI and building)**
 
-the patcher requires ffmpeg for audio conversion and pybluez:
+the patcher requires FFmpeg for audio conversion and pybluez:
 
 **windows:** 
 ```
@@ -79,7 +79,9 @@ sudo apt install ffmpeg
 
 **3. get your firmware file**
 
-you can download the OTA image [here](https://github.com/nnonickreal/openqore/blob/main/docs/FIRMWARES.md) or read the flash with UART:
+click on "Browse firmware archive" and download the firmware.
+
+also, you can download the OTA image [here](https://github.com/nnonickreal/openqore/blob/main/docs/FIRMWARES.md) or read the flash with UART:
 
 [➡️ hardware guide: connecting via UART](docs/FLASH_MP.md)
 
