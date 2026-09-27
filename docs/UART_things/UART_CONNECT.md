@@ -10,9 +10,9 @@ disassembling the left earcup is straightforward:
 
 1.  **remove the earpad:** start by gently detaching the earpad. there are many video guides on youtube for this.
 2.  **remove the screws:** unscrew all visible screws to release the speaker assembly.
-3.  **lift the speaker:** carefully lift the speaker driver. be extremely cautious as it is soldered to the main PCB with thin wires.
+3.  **lift the speaker:** carefully lift the speaker driver. **be extremely cautious** as it is soldered to the main PCB with thin wires.
 4.  **separate the housing:** unscrew and separate the plastic housing. the main cup is attached to the PCB-holding frame with strong clips, so you might need to apply gentle but firm pressure.
-5.  **access the PCB:** once the housing is open, unscrew the main PCB, lift it out, and flip it over. the hardest part is done! :)
+5.  **access the PCB:** unscrew the main PCB, lift it out, and flip it over. the hardest part is done! :)
 
 ### pinout
 
@@ -21,7 +21,7 @@ here is the pinout for the TX and RX pads on the left earcup's PCB:
 <img src="/.github/assets/uart_pins.jpg" width="200" alt="uart pins">
 
 ### removing the glue
-**important:** the uart pads are covered with a layer of hot glue from the factory for insulation. you will need to carefully remove this glue before you can solder.
+**important:** the uart pads are covered with a layer of hot glue. you will need to carefully remove this glue before you can solder.
 
 ### wiring
 once the pads are clean, connect them to your uart adapter in a crossover configuration:
@@ -31,4 +31,4 @@ once the pads are clean, connect them to your uart adapter in a crossover config
 *   **VCC:** do **not** connect the vcc pin! the headphones are powered by their own battery.
 *   **GND (ground):** for a reliable ground connection, it is recommended to solder the gnd wire to the metal shield of the usb-c port on the PCB.
 
-congratulations, you're connected! now you can check out the [reading](https://github.com/nnonickreal/openqore/blob/main/docs/READING_Q35.md) and [flashing](https://github.com/nnonickreal/openqore/blob/main/docs/FLASHING_Q35.md) guides.
+congratulations, you're connected! now you can check out the [reading](../spec_guides/READING_Q35.md) and [flashing](../spec_guides/READING_Q35.md) guides.

@@ -1,7 +1,7 @@
 {
-  "name": "bes1502* patcher (sounds / stereo / sample rate)",
-  "chip": "bes1502p_v2",
+  "name": "CMF Headphone Pro patcher (sounds / stereo / sample rate)",
+  "chip": "bes1502p",
   "version": "1.0",
-  "description": "Dynamically finds the sound_manager switch, replaces WAV prompts with re-encoded SBC, optionally mutes prompts (size=0), and can patch the mono->stereo mixer + sample rate.",
+  "description": "dynamically replaces prompts for CMF Headphone Pro. optionally mutes prompts, and can patch the sample rate.",
   "author": "nnonick"
 }

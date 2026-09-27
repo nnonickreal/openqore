@@ -9,10 +9,10 @@ an open-source toolkit to patch, modify, and enhance the firmware of headphones 
 > **note:** this project is my personal journey into the world of hardware reverse-engineering and embedded systems. expect bugs, mistakes, and lots of fun. all contributions and advice are welcome!
 
 <p align="center">
-  <a href="https://github.com/nnonickreal/OpenQore"><img src="https://img.shields.io/badge/status-in%20development-orange?style=for-the-badge" alt="Status"></a>
-  <a href="LICENSE"><img src="https://img.shields.io/github/license/nnonickreal/OpenQore?style=for-the-badge" alt="License"></a>
-  <a href="https://github.com/nnonickreal/OpenQore/stargazers"><img src="https://img.shields.io/github/stars/nnonickreal/OpenQore?style=for-the-badge" alt="Stars"></a>
-  <a href="https://github.com/nnonickreal/OpenQore/issues"><img src="https://img.shields.io/github/issues/nnonickreal/OpenQore?style=for-the-badge" alt="Issues"></a>
+  <a href="https://github.com/nnonickreal/openqore"><img src="https://img.shields.io/badge/status-in%20development-orange?style=for-the-badge" alt="Status"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/github/license/nnonickreal/openqore?style=for-the-badge" alt="License"></a>
+  <a href="https://github.com/nnonickreal/openqore/stargazers"><img src="https://img.shields.io/github/stars/nnonickreal/openqore?style=for-the-badge" alt="Stars"></a>
+  <a href="https://github.com/nnonickreal/openqore/issues"><img src="https://img.shields.io/github/issues/nnonickreal/openqore?style=for-the-badge" alt="Issues"></a>
 </p>
 
 # important info! (fast navigation)
@@ -20,14 +20,14 @@ an open-source toolkit to patch, modify, and enhance the firmware of headphones 
 
 * patch your headphones' firmware? -> qorepatcher (this repository, look below for quick start)
 * install / develop the custom firmware? (`soundcore devices based on bes2300p` only at the moment) -> [openqore SDK](https://github.com/nnonickreal/openqore-sdk)
-* flash an update / install custom firmware over-the-air? (OTA) -> [OTA files for BES devices](https://github.com/nnonickreal/openqore/blob/main/docs/FIRMWARES.md) and [besota](https://github.com/nnonickreal/besota) - BES OTA flasher
-* flash an update via UART / restore after a bad update or make a backup? -> [hardware flashing guide](https://github.com/nnonickreal/openqore/blob/main/docs/FLASH_MP.md)
+* flash an update / install custom firmware over-the-air? (OTA) -> [OTA files for BES devices](https://github.com/nnonickreal/openBES/blob/main/archive/FIRMWARES.md) and [besota](https://github.com/nnonickreal/besota) - BES OTA flasher
+* flash an update via UART / restore after a bad update or make a backup? -> [hardware flashing guide](docs/UART_things/FLASH_MP.md)
 
 
 i also created a demo project - a [DOOM port](https://github.com/nnonickreal/DOOMcore) based on the [DOOMBuds](https://github.com/arin-s/DOOMBuds) project. check that out too! =)
-<h1 align="center">
+<h2 align="center">
   qorepatcher
-</h1>
+</h2>
 
 <p align="center">
   <strong><a href="INDEX.md">📚 read the full documentation 📚</a></strong>
@@ -37,7 +37,7 @@ i also created a demo project - a [DOOM port](https://github.com/nnonickreal/DOO
 
 this project was started with the soundcore Life Q35. if you want to help test or add support for a new model, please open an issue or DM me (read [contact](#contact--community))!
 
-read [roadmaps and models](https://github.com/nnonickreal/openqore/blob/main/docs/roadmaps/RMS.md) for chips & models support status.
+read [roadmaps and models](docs/roadmaps/RMS.md) for chips & models support status.
 
 ### project roadmap
 
@@ -55,7 +55,7 @@ this guide assumes you have `python` and `git` installed on your system if you'r
 
 **1. download latest release from [releases](https://github.com/nnonickreal/openqore/releases/latest) and open the .exe file.**
 
-**2. install dependencies (only for CLI, linux or building)**
+**2. install dependencies (only for CLI, linux and building)**
 
 the patcher requires FFmpeg for audio conversion and pybluez:
 
@@ -81,9 +81,9 @@ sudo apt install ffmpeg
 
 click on "Browse firmware archive" and download the firmware (or select "patch firmware" -> "download from online archive" option in CLI).
 
-also, you can download the OTA image [here](https://github.com/nnonickreal/openqore/blob/main/docs/FIRMWARES.md) or read the flash with UART:
+also, you can download the OTA image [here](https://github.com/nnonickreal/openBES/blob/main/archive/FIRMWARES.md) or read the flash with UART:
 
-[➡️ hardware guide: connecting via UART](docs/FLASH_MP.md)
+[➡️ hardware guide: connecting via UART](docs/UART_things/FLASH_MP.md)
 
 reading the flash via ota (over-the-air) is planned for a future update. (if it's possible :D)
 
@@ -99,12 +99,14 @@ you can find usage instructions [here](docs/USAGE.md)
   
   if you have downloaded the OTA update image from the official update servers, select the "without OTA boot" option.
 
-  **note:** if you have patched the firmware without OTA boot, you need to [append the OTA boot offset](docs/OTABOOT.md) before [flashing via UART (bestool).](docs/FLASHING.md) you do **NOT** need this if you're using the [besota](https://github.com/nnonickreal/besota) script!
+  **note:** if you have patched the firmware without OTA boot, you need to [append the OTA boot offset](docs/OTA_things/OTABOOT.md) before [flashing via UART (bestool).](docs/UART_things/FLASHING.md) you do **NOT** need this if you're using the [besota](https://github.com/nnonickreal/besota) script!
 </details>
 
 ## contributing
 
 contributions are what make the open source community such an amazing place to learn, inspire, and create. any contributions you make are **greatly appreciated**.
+
+also, check the [module creating guide](docs/contributing_guides/MODULE_SYS.md)!
 
 if you have a suggestion that would make this better, please fork the repo and create a pull request. you can also simply open an issue with the tag "enhancement".
 don't forget to give the project a star! thanks again!
