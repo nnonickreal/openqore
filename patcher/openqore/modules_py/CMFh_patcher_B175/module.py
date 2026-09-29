@@ -11,8 +11,8 @@ from openqore.core.module_base import ModuleBase
 from openqore.core.ui import Field
 
 ALIGN = 4
-# Map of known case IDs to human-readable names for UI clarity
 
+# Map of known case IDs to human-readable names for UI clarity
 KNOWN_PROMPTS = {
     0:  "POWER ON",
     1:  "POWER OFF",
@@ -106,10 +106,9 @@ def is_block_terminator(h1, wide, h2=None):
     because execution falls through to the size/pointer setup on the "not taken" path.
     """
     if not wide:
-        return (h1 & 0xF800) == 0xE000  # unconditional B (T2)
+        return (h1 & 0xF800) == 0xE000
     if (h1 & 0xF800) != 0xF000:
         return False
-    # bits 15,14,12 of h2: B.W unconditional -> 0x9000, BL/BLX -> 0xD000
     tag = h2 & 0xD000
     return tag in (0x9000, 0xD000)
 
@@ -119,9 +118,8 @@ def analyze_prompt_block(fw, start_off, base_address):
     Scans a single case-handler starting at start_off, looking for:
       - a literal pool pointer to the audio blob (ldr rX,[pc,#imm] -> ROM address)
       - an explicit size-setting instruction (movw / mov.w)
-    Stops as soon as it reaches the end of *this* handler (unconditional branch
-    or call), so it can never accidentally read instructions that belong to the
-    next case in the switch table.
+    Stops as soon as it reaches the end of this handler to prevent reading
+    into subsequent case blocks.
     """
     pc = start_off
     found_target = None
@@ -136,7 +134,7 @@ def analyze_prompt_block(fw, start_off, base_address):
         wide = is_thumb32(h1)
         h2 = struct.unpack_from("<H", fw, pc + 2)[0] if wide else None
 
-        # ldr rX, [pc, #imm]  (16-bit literal load)
+        # 16-bit literal load: ldr rX, [pc, #imm]
         if not wide and (h1 & 0xf800) == 0x4800:
             imm8 = h1 & 0xff
             va_instr = base_address + pc
@@ -145,12 +143,11 @@ def analyze_prompt_block(fw, start_off, base_address):
             lit_off = lit_va - base_address
             if 0 <= lit_off <= len(fw) - 4:
                 val = read_u32_le(fw, lit_off)
-                # Ensure it points to flash ROM
                 if base_address + 0x10000 <= val < base_address + len(fw) and found_ptr is None:
                     found_target = val
                     found_ptr = lit_va
 
-        # movw rX, #imm  (F240 encoding)
+        # movw rX, #imm (F240 encoding)
         if wide and (h1 & 0xfbf0) == 0xf240:
             try:
                 _rd, imm = thumb2.decode_movw_thumb2(fw[pc:pc + 4])
@@ -158,11 +155,11 @@ def analyze_prompt_block(fw, start_off, base_address):
                     found_size = base_address + pc
             except ValueError:
                 pass
-        # mov.w rX, #0  (F04F encoding)
+        # mov.w rX, #0 (F04F encoding)
         elif wide and (h1 & 0xfbef) == 0xf04f and found_size is None:
             found_size = base_address + pc
 
-        # FIX: stop before we bleed into the next case's machine code.
+        # Stop once the end of this handler's basic block is reached
         if is_block_terminator(h1, wide, h2):
             break
 
@@ -218,13 +215,8 @@ def generate_patch_map(fw, base_address, log):
                         if size is not None:
                             current_groups[target]["size_instrs"].add(size)
 
-                # FIX: a single "size" instruction address must belong to exactly
-                # one target. If two different targets both claim the same
-                # instruction address, our block analysis walked across a case
-                # boundary somewhere (or the layout is genuinely ambiguous) --
-                # in either case it is NOT safe to patch that instruction, so we
-                # strip it from every group that claims it instead of silently
-                # letting one group's patch clobber another's.
+                # Ensure each size instruction belongs to a single target.
+                # If claimed by multiple targets, drop it to prevent collisions.
                 size_owner = {}
                 ambiguous = set()
                 for tgt, data in current_groups.items():
@@ -239,8 +231,7 @@ def generate_patch_map(fw, base_address, log):
                         f"size-instruction(s) shared by multiple targets: "
                         + ", ".join(f"0x{a:x}" for a in sorted(ambiguous)))
 
-                # Filter valid groups (must have at least one explicit,
-                # unambiguously-owned size instruction)
+                # Keep only groups that have unambiguously owned size instructions
                 valid_groups = {}
                 for tgt, data in current_groups.items():
                     clean_sizes = sorted(s for s in data["size_instrs"] if s not in ambiguous)
@@ -291,8 +282,7 @@ def find_sample_rate_candidates(fw, base_address, anchor_va, forbidden_offsets=f
             pos = idx + len(s_key)
 
     for off in range(0, max(0, fw_len - 12), 2):
-        # FIX: never treat an instruction that we already use as a per-case
-        # "size" instruction as a candidate for the global sample-rate patch.
+        # Exclude instructions already owned by individual prompt size patches
         if off in forbidden_offsets:
             continue
 
@@ -340,8 +330,7 @@ def find_sample_rate_candidates(fw, base_address, anchor_va, forbidden_offsets=f
                 score += 200
                 break
 
-        # FIX: anchor_va must be a virtual address, not a raw file offset,
-        # otherwise this distance heuristic is meaningless.
+        # Distance heuristic evaluated against anchor virtual address
         delta = va - anchor_va
         if 0 < delta < 0x2000:
             score += 40
@@ -458,7 +447,7 @@ class BesGenericModule(ModuleBase):
     def __init__(self):
         super().__init__()
         self.patch_map = {}
-        self.tbh_offset = 0  # file offset of the switch table (NOT a VA)
+        self.tbh_offset = 0
 
     def get_static_fields(self, ctx):
         return [
@@ -467,8 +456,11 @@ class BesGenericModule(ModuleBase):
                            (0x2c000000, "with OTA boot (base 0x2c000000)")],
                   default=0x2c020000),
             Field(id="sounds_dir", label="folder with replacement WAV files", kind="string", default="sounds_src"),
-            Field(id="target_sample_rate", label="target sample rate for prompts (Hz)", kind="int",
-                  min=8000, max=48000, default=32000),
+            Field(id="target_sample_rate", label="target sample rate for prompts", kind="choice",
+                  choices=[(16000, "16 kHz"),
+                           (32000, "32 kHz"),
+                           (48000, "48 kHz")],
+                  default=32000),
             Field(id="auto_download_ffmpeg",
                   label="automatically download ffmpeg if not found on this system",
                   kind="bool", default=True),
@@ -561,7 +553,7 @@ class BesGenericModule(ModuleBase):
                 ctx.log(f"[warning] {wav_name}: source file not found in '{sounds_dir}', skipping.")
                 continue
 
-            # Используем моно (ffmpeg сам подберёт Bitpool ~31-53)
+            # Encode to mono SBC; ffmpeg handles bitpool allocation (~31-53)
             sbc = encode_wav_to_sbc(ffmpeg_bin, wav_path, target_rate)
             if len(sbc) > 0xFFFF:
                 ctx.log(f"[error] {wav_name}: SBC size 0x{len(sbc):x} > 0xffff, skipping.")
@@ -572,14 +564,14 @@ class BesGenericModule(ModuleBase):
             new_va = base_address + cur
             ctx.log(f"Write: file_off=0x{cur:x}..0x{end:x} (size={len(sbc)})")
 
-            # Переписываем все указатели (aliases) на новый файл
+            # Update literal pool pointers (aliases) to the new blob location
             for ptr_va in data["ptrs"]:
                 ptr_off = ctx.va_to_off(ptr_va)
                 old_ptr = read_u32_le(fw, ptr_off)
                 write_u32_le(fw, ptr_off, new_va)
                 ctx.log(f"Ptr patch: pool@0x{ptr_va:x} {old_ptr:#010x} -> {new_va:#010x}")
 
-            # Обновляем все инструкции инициализации размера
+            # Update prompt size instructions
             for size_va in data["size_instrs"]:
                 size_off = ctx.va_to_off(size_va)
                 rd, old_size = decode_size_instr(fw, size_off)
@@ -596,12 +588,9 @@ class BesGenericModule(ModuleBase):
         ctx.log(f"\n[info] Patched {patched} prompt group(s). Firmware size is now {len(fw)} bytes.")
 
         ctx.log("\n=== Sample Rate ===")
-        # FIX: anchor must be a virtual address (tbh_offset was a raw file offset).
         anchor_va = base_address + self.tbh_offset
 
-        # FIX: never let the sample-rate scanner touch instructions that are
-        # already owned by per-case size patches (this used to be the source
-        # of "phantom" size patches like 0x800 -> 0x7d00).
+        # Prevent sample-rate scanner from modifying instructions already claimed by per-case patches
         forbidden_offsets = set()
         for data in self.patch_map.values():
             for size_va in data["size_instrs"]:
