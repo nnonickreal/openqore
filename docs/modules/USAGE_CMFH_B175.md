@@ -41,11 +41,13 @@
 
 ### step 2: run the patcher
 
+**warning! do NOT set any sample rate that NOT equals 32000, 48000 or 16000 Hz. it can brick headphones!**
+
 #### GUI guide
 1. open the `openqore` .exe file.
 2. select or download the firmware from catalog.
 3. select the `CMF Headphone Pro patcher` module.
-4. change the module & sounds patch options if needed. i recommend setting the sample rate to 32kHz.
+4. change the module & sounds patch options if needed. i recommend setting the sample rate to 32kHz. (32000)
 5. patch the firmware.
 
 #### CLI guide
