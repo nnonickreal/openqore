@@ -48,7 +48,8 @@
 2. select or download the firmware from catalog.
 3. select the `CMF Headphone Pro patcher` module.
 4. change the module & sounds patch options if needed. i recommend setting the sample rate to 32kHz. (32000)
-5. patch the firmware.
+5. if you see any other sounds not listed in the table (e.g. ID_37.wav), select "keep original" for them (this will be fixed in the next update)
+6. patch the firmware.
 
 #### CLI guide
 1.  open your terminal in the `openqore/patcher` directory.
@@ -59,7 +60,8 @@
 3. you will be presented with a menu of available patches. select the option for "patch audio prompts".
 4. select the `CMF Headphone Pro patcher` module.
 5. change the module & sounds patch options if needed. i recommend setting the sample rate to 32kHz.
-6. patch the firmware.
+6. if you see any other sounds not listed in the table (e.g. ID_37.wav), select "keep original" for them (this will be fixed in the next update)
+7. patch the firmware.
 
     > **warning!** if you keep the stock sounds but change the sample rate, they'll speed up, so it's recommended to mute them.
 
